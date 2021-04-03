@@ -1,1 +1,1 @@
-# Machine Learning 및 Deep Learning 스터
+# Machine Learning 및 Deep Learning 스터디
