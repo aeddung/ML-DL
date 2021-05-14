@@ -66,7 +66,7 @@ mapping
 
 # Train / Test set 분리
 from sklearn.model_selection import train_test_split
-train, test = train_test_split(new_df, test_size=0.2, random_state=42)
+train, test = train_test_split(new_data, test_size=0.2, random_state=42)
 print("train shape is:", len(train))
 print("test shape is:", len(test))
 
