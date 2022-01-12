@@ -162,6 +162,7 @@ def calc_accuracy(X,Y):
 for e in range(num_epochs):
     train_acc = 0.0
     test_acc = 0.0
+    
     model.train()
     for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(tqdm_notebook(train_dataloader)):
         optimizer.zero_grad()
@@ -180,6 +181,17 @@ for e in range(num_epochs):
             print("epoch {} batch id {} loss {} train acc {}".format(e+1, batch_id+1, loss.data.cpu().numpy(), train_acc / (batch_id+1)))
     print("epoch {} train acc {}".format(e+1, train_acc / (batch_id+1)))
     
+    model.eval() # 평가 모드로 변경
+    
+    for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(tqdm_notebook(test_dataloader)):
+        token_ids = token_ids.long().to(device)
+        segment_ids = segment_ids.long().to(device)
+        valid_length= valid_length
+        label = label.long().to(device)
+        out = model(token_ids, valid_length, segment_ids)
+        test_acc += calc_accuracy(out, label)
+    print("epoch {} test acc {}".format(e+1, test_acc / (batch_id+1)))
+    
 # 테스트 문장 예측
 test_sentence = '음식을 잘못 먹었나봐요... 발열, 구토, 복통, 설사 증상이 있어요.'
 test_label = 7 # 실제 질병
@@ -195,14 +207,3 @@ for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(tqdm_no
   valid_length= valid_length
   out = model(token_ids, valid_length, segment_ids)
   print(out)
-    
-    model.eval() # 평가 모드로 변경
-    
-    for batch_id, (token_ids, valid_length, segment_ids, label) in enumerate(tqdm_notebook(test_dataloader)):
-        token_ids = token_ids.long().to(device)
-        segment_ids = segment_ids.long().to(device)
-        valid_length= valid_length
-        label = label.long().to(device)
-        out = model(token_ids, valid_length, segment_ids)
-        test_acc += calc_accuracy(out, label)
-    print("epoch {} test acc {}".format(e+1, test_acc / (batch_id+1)))
